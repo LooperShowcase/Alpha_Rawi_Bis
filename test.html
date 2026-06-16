@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arab Food Showdown - Gourmet Edition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { margin: 0; overflow: hidden; background: #87CEEB; font-family: 'Inter', sans-serif; }
+        canvas { display: block; width: 100vw; height: 100vh; cursor: crosshair; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <div id="selection-screen" class="absolute inset-0 bg-gradient-to-br from-green-900 to-emerald-700 flex flex-col items-center justify-center p-4 z-20">
+        <h1 id="selection-title" class="text-white text-5xl font-bold mb-8 text-center drop-shadow-lg">Arab Food Showdown</h1>
+        
+        <div id="mode-selection" class="flex gap-4">
+            <button onclick="setMode('single')" class="bg-white p-8 rounded-2xl font-bold text-2xl hover:bg-gray-100 transition shadow-xl border-b-4 border-gray-300">Single Player</button>
+            <button onclick="setMode('two')" class="bg-white p-8 rounded-2xl font-bold text-2xl hover:bg-gray-100 transition shadow-xl border-b-4 border-gray-300">Two Players</button>
+        </div>
+
+        <div id="country-selection" class="hidden grid grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-4xl"></div>
+        <div id="food-selection" class="hidden flex flex-wrap justify-center gap-4 w-full max-w-4xl mt-8"></div>
+    </div>
+
+    <div id="game-ui" class="hidden absolute top-4 w-full px-8 flex justify-between items-center pointer-events-none z-10">
+        <div class="w-1/3 bg-gray-900/80 p-4 rounded-xl text-white border-2 border-green-500">
+            <div id="player1-name" class="font-bold mb-1">Player 1</div>
+            <div id="player1-food-name" class="text-xs text-green-300 italic mb-2">Food</div>
+            <div class="h-4 bg-gray-600 rounded-full overflow-hidden"><div id="player1-hp" class="h-full bg-green-500 w-full transition-all duration-300"></div></div>
+        </div>
+        <div class="text-center text-4xl font-black text-white drop-shadow-md">VS</div>
+        <div class="w-1/3 bg-gray-900/80 p-4 rounded-xl text-white border-2 border-red-500">
+            <div id="player2-name" class="font-bold mb-1 text-right">Player 2</div>
+            <div id="player2-food-name" class="text-xs text-red-300 italic mb-2 text-right">Food</div>
+            <div class="h-4 bg-gray-600 rounded-full overflow-hidden"><div id="player2-hp" class="h-full bg-red-500 w-full transition-all duration-300"></div></div>
+        </div>
+    </div>
+
+    <div id="game-over" class="hidden absolute inset-0 bg-black/80 flex flex-col items-center justify-center text-white z-30">
+        <h2 id="result-text" class="text-6xl font-bold mb-8">Game Over</h2>
+        <button onclick="location.reload()" class="bg-green-600 px-8 py-4 rounded-xl text-2xl hover:bg-green-500 transition shadow-lg">Play Again</button>
+    </div>
+
+    <canvas id="gameCanvas"></canvas>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const selectionScreen = document.getElementById('selection-screen');
+        const modeSelection = document.getElementById('mode-selection');
+        const foodSelection = document.getElementById('food-selection');
+        const countrySelection = document.getElementById('country-selection');
+        const selectionTitle = document.getElementById('selection-title');
+        const gameUI = document.getElementById('game-ui');
+        const p1HpBar = document.getElementById('player1-hp');
+        const p2HpBar = document.getElementById('player2-hp');
+        const gameOverScreen = document.getElementById('game-over');
+
+        const countries = {
+            'Palestine': { color: '#2ecc71', foods: ['Maqluba', 'Musakhan', 'Falafel', 'Hummus', 'Qidreh', 'Mansaf'] },
+            'Morocco': { color: '#e67e22', foods: ['Couscous', 'Tagine', 'Pastilla', 'Harira', 'Zaalouk', 'Mechoui'] },
+            'Algeria': { color: '#f1c40f', foods: ['Chakhchoukha', 'Rechta', 'Merguez', 'Bourek', 'Couscous-DZ', 'Tadjine-DZ'] },
+            'Egypt': { color: '#3498db', foods: ['Koshary', 'Fattah', 'Ful Medames', 'Molokhia', 'Hawawshi', 'Mahshi'] }
+        };
+
+        let mode = 'single';
+        let selection = { step: 'p1Country', p1: {}, p2: {} };
+        let p1 = { x: 100, y: 300, vx: 0, vy: 0, hp: 100, food: '', country: '', isPunching: false };
+        let p2 = { x: 700, y: 300, vx: 0, vy: 0, hp: 100, food: '', country: '', isPunching: false, ai: true };
+        let gameRunning = false;
+
+        function setMode(m) { mode = m; initSelection(); }
+
+        function drawFoodSkin(x, y, name) {
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.shadowBlur = 10; ctx.shadowColor = 'rgba(0,0,0,0.3)';
+            
+            // Vibrant cartoon style with clear outlines
+            ctx.lineWidth = 4;
+            ctx.strokeStyle = '#333';
+
+            if (name === 'Maqluba') {
+                ctx.fillStyle = '#d2b48c'; ctx.beginPath(); ctx.arc(0, 0, 35, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+                ctx.fillStyle = '#e67e22'; ctx.beginPath(); ctx.arc(0, -10, 15, 0, Math.PI * 2); ctx.fill();
+            } else if (name === 'Tagine') {
+                ctx.fillStyle = '#d35400'; ctx.beginPath(); ctx.moveTo(-35, 20); ctx.lineTo(35, 20); ctx.lineTo(0, -40); ctx.closePath(); ctx.fill(); ctx.stroke();
+            } else if (name === 'Koshary') {
+                ctx.fillStyle = '#2c3e50'; ctx.beginPath(); ctx.arc(0, 0, 30, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+                ctx.fillStyle = '#e74c3c'; ctx.beginPath(); ctx.arc(0, -5, 10, 0, Math.PI * 2); ctx.fill();
+            } else if (name === 'Falafel') {
+                ctx.fillStyle = '#8b4513'; ctx.beginPath(); ctx.arc(0, 0, 20, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+                ctx.fillStyle = '#a0522d'; ctx.beginPath(); ctx.arc(5, -5, 5, 0, Math.PI * 2); ctx.fill();
+            } else {
+                ctx.fillStyle = '#ddd'; ctx.beginPath(); ctx.arc(0, 0, 25, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+            }
+            ctx.restore();
+        }
+
+        function initSelection() {
+            modeSelection.classList.add('hidden');
+            countrySelection.classList.remove('hidden');
+            countrySelection.innerHTML = '';
+            selectionTitle.innerText = selection.step === 'p1Country' ? "Player 1: Select Country" : "Player 2: Select Country";
+            Object.keys(countries).forEach(c => {
+                const btn = document.createElement('button');
+                btn.className = 'bg-white p-6 rounded-2xl font-bold text-lg hover:bg-gray-100 transition shadow-xl border-b-4 border-gray-300';
+                btn.innerText = c;
+                btn.onclick = () => {
+                    if (selection.step === 'p1Country') { selection.p1.country = c; selection.step = 'p1Food'; showFoodSelection(); }
+                    else { selection.p2.country = c; selection.step = 'p2Food'; showFoodSelection(); }
+                };
+                countrySelection.appendChild(btn);
+            });
+        }
+
+        function showFoodSelection() {
+            countrySelection.classList.add('hidden');
+            foodSelection.classList.remove('hidden');
+            foodSelection.innerHTML = '';
+            selectionTitle.innerText = `Pick Your Dish`;
+            const country = (selection.step === 'p1Food' || selection.step === 'p1Country') ? selection.p1.country : selection.p2.country;
+            countries[country].foods.forEach(f => {
+                const btn = document.createElement('button');
+                btn.className = 'bg-white text-green-800 p-4 rounded-xl font-bold hover:bg-green-50 transition shadow-lg border-2 border-green-200';
+                btn.innerText = f;
+                btn.onclick = () => {
+                    if (selection.step === 'p1Food') {
+                        selection.p1.food = f;
+                        if (mode === 'single') {
+                            selection.p2.country = Object.keys(countries)[Math.floor(Math.random()*4)];
+                            selection.p2.food = countries[selection.p2.country].foods[0];
+                            startGame();
+                        } else {
+                            selection.step = 'p2Country';
+                            foodSelection.classList.add('hidden');
+                            countrySelection.classList.remove('hidden');
+                            initSelection();
+                        }
+                    } else {
+                        selection.p2.food = f;
+                        startGame();
+                    }
+                };
+                foodSelection.appendChild(btn);
+            });
+        }
+
+        window.addEventListener('keydown', (e) => {
+            if (!gameRunning) return;
+            // P1 Controls
+            if (e.key === 'a') p1.vx = -8;
+            if (e.key === 'd') p1.vx = 8;
+            if (e.key === ' ') { if(p1.y >= 300) p1.vy = -20; }
+            if (e.key === 'q') performPunch(p1, p2);
+            
+            // P2 Controls
+            if (mode === 'two') {
+                if (e.key === 'ArrowLeft') p2.vx = -8;
+                if (e.key === 'ArrowRight') p2.vx = 8;
+                if (e.key === 'ArrowUp') { if(p2.y >= 300) p2.vy = -20; }
+                if (e.key === 'ArrowDown') performPunch(p2, p1);
+            }
+        });
+        window.addEventListener('keyup', (e) => {
+            if (e.key === 'a' || e.key === 'd') p1.vx = 0;
+            if (mode === 'two') { if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') p2.vx = 0; }
+        });
+
+        function performPunch(attacker, target) {
+            attacker.isPunching = true;
+            if (Math.abs(attacker.x - target.x) < 80) {
+                target.hp -= 10;
+                if (target === p1) p1HpBar.style.width = Math.max(0, p1.hp) + '%';
+                else p2HpBar.style.width = Math.max(0, p2.hp) + '%';
+                if (target.hp <= 0) endGame(`${attacker === p1 ? "Player 1" : "Player 2"} Wins!`);
+            }
+            setTimeout(() => attacker.isPunching = false, 300);
+        }
+
+        function drawBackground() {
+            const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            grad.addColorStop(0, '#87CEEB'); grad.addColorStop(1, '#e0f7fa');
+            ctx.fillStyle = grad; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#4caf50'; ctx.fillRect(0, 400, canvas.width, canvas.height - 400);
+            for(let i=0; i<10; i++) {
+                ctx.fillStyle = '#5d4037'; ctx.fillRect(i * 200 - 50 + 10, 300, 20, 100);
+                ctx.fillStyle = '#2e7d32'; ctx.beginPath(); ctx.arc(i * 200 - 50 + 20, 300, 50, 0, Math.PI*2); ctx.fill();
+            }
+        }
+
+        function gameLoop() {
+            if (!gameRunning) return;
+            drawBackground();
+            [p1, p2].forEach(p => {
+                p.vy += 1; p.y += p.vy;
+                p.x = Math.max(20, Math.min(canvas.width - 20, p.x + p.vx));
+                if (p.y > 300) { p.y = 300; p.vy = 0; }
+                if (p.ai && mode === 'single') {
+                    if (p.x > p1.x + 50) p.vx = -5; else if (p.x < p1.x - 50) p.vx = 5;
+                    else { p.vx = 0; if (Math.random() < 0.05) performPunch(p, p1); }
+                }
+                drawFoodSkin(p.x, p.y, p.food);
+            });
+            requestAnimationFrame(gameLoop);
+        }
+
+        function startGame() {
+            p1.food = selection.p1.food; p2.food = selection.p2.food;
+            document.getElementById('player1-name').innerText = `${selection.p1.country}`;
+            document.getElementById('player1-food-name').innerText = p1.food;
+            document.getElementById('player2-name').innerText = `${selection.p2.country}`;
+            document.getElementById('player2-food-name').innerText = p2.food;
+            selectionScreen.classList.add('hidden');
+            gameUI.classList.remove('hidden');
+            gameRunning = true;
+            gameLoop();
+        }
+
+        function endGame(msg) {
+            gameRunning = false;
+            document.getElementById('result-text').innerText = msg;
+            gameOverScreen.classList.remove('hidden');
+        }
+
+        window.onresize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
+        window.onresize();
+    </script>
+</body>
+</html>

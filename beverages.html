@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<style> /* beverages-style.css */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  background-color: #fff8f0;
+  color: #333;
+}
+
+/* Header */
+
+header {
+  background: linear-gradient(90deg, #8b4513, #d89b45);
+  color: white;
+  text-align: center;
+  padding: 40px 20px;
+}
+
+header h1 {
+  font-size: 3rem;
+  margin-bottom: 10px;
+}
+
+header p {
+  font-size: 1.1rem;
+}
+
+/* Main Container */
+
+.container {
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+/* Drink Cards */
+
+.drink-card {
+  display: flex;
+  align-items: center;
+  background: white;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  transition: 0.3s;
+}
+
+.drink-card:hover {
+  transform: scale(1.02);
+}
+
+/* Images */
+
+.drink-card img {
+  width: 280px;
+  height: 220px;
+  object-fit: cover;
+}
+
+/* Drink Info */
+
+.drink-info {
+  padding: 25px;
+}
+
+.drink-info h2 {
+  color: #c76b00;
+  margin-bottom: 15px;
+  font-size: 2rem;
+}
+
+.drink-info p {
+  line-height: 1.7;
+  font-size: 1rem;
+}
+
+/* Footer */
+
+footer {
+  background-color: #8b4513;
+  color: white;
+  text-align: center;
+  padding: 20px;
+  margin-top: 30px;
+}
+
+/* Responsive Design */
+
+@media (max-width: 768px) {
+
+  .drink-card {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .drink-card img {
+    width: 100%;
+    height: 250px;
+  }
+
+  .drink-info {
+    padding: 20px;
+  }
+
+  header h1 {
+    font-size: 2.2rem;
+  }
+}</style>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Arab Beverages</title>
+
+  <link rel="stylesheet" href="beverages-style.css">
+
+</head>
+<body>
+
+  <header>
+    <h1>Traditional Arab Beverages</h1>
+    <p>Refreshing drinks from across the Arab world</p>
+  </header>
+
+  <main class="container">
+
+    <div class="drink-card">
+      <img src="https://cdn.shopify.com/s/files/1/0022/1393/7252/articles/Arabic_Coffee_2048x2048_crop_center.webp?v=1732611085" alt="Arabic Coffee">
+
+      <div class="drink-info">
+        <h2>Arabic Coffee</h2>
+        <p>
+          Arabic coffee is one of the most famous traditional drinks in the Arab world.
+          It is lightly roasted and flavored with cardamom, often served with dates.
+        </p>
+      </div>
+    </div>
+
+    <div class="drink-card">
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSt4BNk-bryKJar8zGwwOpgSR28MWfr9iTPgg&s" alt="Mint Tea">
+
+      <div class="drink-info">
+        <h2>Mint Tea</h2>
+        <p>
+          A refreshing hot tea mixed with fresh mint leaves and sugar.
+          Popular in Morocco and many Middle Eastern countries.
+        </p>
+      </div>
+    </div>
+
+    <div class="drink-card">
+      <img src="https://amazingfoodanddrink.com/wp-content/uploads/2024/11/AFAD-Images-2025-12-14T002154.101.jpg" alt="Karkadeh">
+
+      <div class="drink-info">
+        <h2>Karkadeh</h2>
+        <p>
+          A sweet hibiscus drink with a deep red color.
+          Served cold in summer and hot in winter.
+        </p>
+      </div>
+    </div>
+
+    <div class="drink-card">
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREq_7FfzfNWdrqjaAb1eHoqXRouTkobuMkLg&s" alt="Tamarind Juice">
+
+      <div class="drink-info">
+        <h2>Tamarind Juice</h2>
+        <p>
+          A delicious sweet and sour drink made from tamarind fruit.
+          Very popular during Ramadan.
+        </p>
+      </div>
+    </div>
+
+  </main>
+
+  <footer>
+    <p>Enjoy authentic Arab drinks ☕</p>
+  </footer>
+
+</body>
+</html>

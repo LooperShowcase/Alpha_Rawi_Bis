@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arab Street Food Delights</title>
+
+  <style>
+    /* street-food-style.css */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  background-color: #fff8f0;
+  color: #333;
+}
+
+/* Header */
+
+header {
+  background: linear-gradient(90deg, #8b4513, #d89b45);
+  color: white;
+  text-align: center;
+  padding: 30px 20px;
+}
+
+header h1 {
+  font-size: 3rem;
+  margin-bottom: 20px;
+}
+
+/* Navigation */
+
+nav ul {
+  list-style: none;
+}
+
+nav ul li {
+  display: inline-block;
+  margin: 0 15px;
+}
+
+nav ul li a {
+  text-decoration: none;
+  color: white;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+nav ul li a:hover {
+  color: #ffe4b5;
+}
+
+/* Main Section */
+
+main {
+  padding: 40px;
+}
+
+section h2 {
+  text-align: center;
+  margin-bottom: 40px;
+  color: #b46b00;
+  font-size: 2rem;
+}
+
+/* Food Cards */
+
+.food-item {
+  display: flex;
+  align-items: center;
+  background: white;
+  margin-bottom: 30px;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  transition: 0.3s;
+}
+
+.food-item:hover {
+  transform: scale(1.02);
+}
+
+.food-item img {
+  width: 250px;
+  height: 200px;
+  object-fit: cover;
+}
+
+.food-info {
+  padding: 20px;
+}
+
+.food-info h3 {
+  color: #c76b00;
+  margin-bottom: 10px;
+  font-size: 1.8rem;
+}
+
+.food-info p {
+  margin-bottom: 15px;
+  line-height: 1.6;
+}
+
+/* Buttons */
+
+.food-info a {
+  display: inline-block;
+  padding: 10px 18px;
+  background-color: #c76b00;
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  transition: 0.3s;
+}
+
+.food-info a:hover {
+  background-color: #8b4513;
+}
+
+/* Footer */
+
+footer {
+  background: #8b4513;
+  color: white;
+  text-align: center;
+  padding: 20px;
+  margin-top: 30px;
+}
+
+/* Responsive */
+
+@media (max-width: 768px) {
+
+  .food-item {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .food-item img {
+    width: 100%;
+    height: 250px;
+  }
+
+  nav ul li {
+    display: block;
+    margin: 10px 0;
+  }
+}
+  </style>
+
+</head>
+<body>
+  <header>
+    <h1>Arab Street Food Delights</h1>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="desserts.html">Desserts</a></li>
+        <li><a href="healthy.html">Healthy Foods</a></li>
+        <li><a href="beverages.html">Beverages</a></li>
+        <li> <a href="reciepe.html">reciepe</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section>
+      <h2>Popular Arab Street Foods</h2>
+      
+      <div class="food-item">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSPi37T8QAa8pYGDrOr7hB1xXqVj5JhPrNZkA&s" alt="Falafel" width="20%">
+        <div class="food-info">
+          <h3>Falafel</h3>
+          <p>Crunchy, golden balls made from chickpeas, fried to perfection and served with tahini or pickles.</p>
+          <a href="falafel-recipe.html">Learn the Recipe</a>
+        </div>
+      </div>
+
+      <div class="food-item">
+        <img src="https://t3.ftcdn.net/jpg/18/81/86/86/360_F_1881868649_nucwzlFZkUn1EKtbr2BnP5KE7gNzkmo0.jpg" alt="Shawarma" width="20%">
+        <div class="food-info">
+          <h3>Shawarma</h3>
+          <p>Juicy, marinated meat (usually lamb or chicken) served in pita bread with garlic sauce and vegetables.</p>
+          <a href="shawarma-recipe.html">Learn the Recipe</a>
+        </div>
+      </div>
+
+      <div class="food-item">
+        <img src="https://media.istockphoto.com/id/2120367698/photo/open-meat-sfiha.jpg?s=612x612&w=0&k=20&c=z5SfFuohWHfUfSAm8zDO4nB-kxJ8qJQjAvl60oEZigg=" alt="Sfiha" width="20%">
+        <div class="food-info">
+          <h3>Sfiha</h3>
+          <p>Delicious meat pies, often topped with spiced ground lamb or beef, a favorite in Lebanese and Syrian street food.</p>
+          <a href="sfiha-recipe.html">Learn the Recipe</a>
+        </div>
+      </div>
+
+      <div class="food-item">
+        <img src="https://media.istockphoto.com/id/1473859115/photo/manakeesh-zaatar-arabic-flat-bread.jpg?s=612x612&w=0&k=20&c=IaJ0HZcF0-bFqbm9zAhcYIZV4Lr19vfxhKhnG4E2aoU=" alt="Manakish" width="20%">
+        <div class="food-info">
+          <h3>Manakish</h3>
+          <p>A savory flatbread topped with za'atar, cheese, or minced meat, perfect for a quick snack or breakfast.</p>
+          <a href="manakish-recipe.html">Learn the Recipe</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p></p>
+  </footer>
+</body>
+</html>
